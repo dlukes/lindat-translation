@@ -40,6 +40,8 @@ class ReverseProxied(object):
         scheme = environ.get('HTTP_X_SCHEME', '')
         if scheme:
             environ['wsgi.url_scheme'] = scheme
+        if environ.get('HTTP_ACCEPT') == '*/*':
+            environ['HTTP_ACCEPT'] = 'application/json'
         return self.app(environ, start_response)
 
 
