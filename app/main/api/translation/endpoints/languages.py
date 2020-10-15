@@ -2,6 +2,7 @@ from flask import request, url_for
 from flask.helpers import make_response
 from flask_restplus import Resource, fields
 from flask_restplus.api import output_json
+from werkzeug import MIMEAccept
 
 from app.main.api.restplus import api
 from app.main.api.translation.endpoints.MyAbstractResource import MyAbstractResource
@@ -98,6 +99,8 @@ languages_resources = ns.model('LanguagesResource', {
 
 @ns.route('/')
 class LanguageCollection(MyAbstractResource):
+    _unspecified_mime = MIMEAccept([("*/*", 1)])
+    _default_mime = MIMEAccept([("application/json", 1)])
 
     @ns.marshal_with(languages_resources, skip_none=True)
     def get(self):
@@ -129,6 +132,8 @@ class LanguageCollection(MyAbstractResource):
         Translate input from scr lang to tgt lang.
         It expects the text in variable called `input_text` and handles both "application/x-www-form-urlencoded" and "multipart/form-data" (for uploading text/plain files)
         """
+        if request.accept_mimetypes == self._unspecified_mime:
+            request.accept_mimetypes = self._default_mime
         text = self.get_text_from_request()
         args = text_input_with_src_tgt.parse_args(request)
         src = args.get('src', 'en')
