@@ -30,10 +30,10 @@ class MyAbstractResource(Resource):
 
     def set_media_type_representations(self):
         self.representations = self.representations if self.representations else {}
-        if 'text/plain' not in self.representations:
-            self.representations['text/plain'] = MyAbstractResource.to_text
         if 'application/json' not in self.representations:
             self.representations['application/json'] = output_json
+        if 'text/plain' not in self.representations:
+            self.representations['text/plain'] = MyAbstractResource.to_text
 
     def create_response(self, translation, extra_msg):
         end = datetime.datetime.now()
