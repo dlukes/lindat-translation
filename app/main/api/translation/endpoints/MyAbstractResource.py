@@ -1,4 +1,5 @@
 import datetime
+from collections import OrderedDict
 from flask import request
 from flask.helpers import make_response
 from flask_restplus import Resource
@@ -29,11 +30,11 @@ class MyAbstractResource(Resource):
         return text
 
     def set_media_type_representations(self):
-        self.representations = self.representations if self.representations else {}
-        if 'text/plain' not in self.representations:
-            self.representations['text/plain'] = MyAbstractResource.to_text
+        self.representations = OrderedDict(self.representations) if self.representations else OrderedDict()
         if 'application/json' not in self.representations:
             self.representations['application/json'] = output_json
+        if 'text/plain' not in self.representations:
+            self.representations['text/plain'] = MyAbstractResource.to_text
 
     def create_response(self, translation, extra_msg):
         end = datetime.datetime.now()
